@@ -1,0 +1,14 @@
+PROG=testConcSet
+RM=rm all
+
+all: $(PROG).cpp
+	@g++ -std=c++11 -Wall -pthread $(PROG).cpp -o $(PROG)
+	./$(PROG) 2 100
+
+	./$(PROG) 4 100
+
+	./$(PROG) 8 100
+
+.PHONY: clean
+clean:
+	$(RM) $(PROG)
