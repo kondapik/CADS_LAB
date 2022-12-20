@@ -133,7 +133,7 @@ public:
         lazyNode* prev = head;
         lazyNode* curr = head->next;
         curr->lock();
-        std::cout << "The state of the set after successful operation is: ";
+        std::cout << "The state of the lazy set after successful operation is: ";
         while(curr->value < INT_MAX){
             std::cout << ", value: "<< curr->value << " mark: " << std::boolalpha << curr->mark <<" ";
             prev->unlock();

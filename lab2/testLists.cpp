@@ -1,13 +1,27 @@
-#include <ctime>
-#include <stdlib.h>
-#include <vector>
-#include <thread>
-#include <iostream>
-#include <mutex>
+#include <bits/stdc++.h>
 #include "LazyList.cpp"
 #include "OptimisticList.cpp"
 #include "FineList.cpp"
 
+enum listOps {add, rmv, ctn};
+
+// typedef struct setOperation{
+//   listOps method;
+//   int value;
+//   bool expOutput;
+// } setOperation;
+
+typedef struct setTestCase{
+  listOps method;
+  int value;
+} setTestCase;
+
+// std::vector<setOperation> operationSequence;
+std::vector<setTestCase> allTestCases;
+
+LazyList lzySet;
+OptimisticList optSet;
+FineList finSet;
 
 int helpText(char *program)
 {
@@ -21,6 +35,75 @@ int helpText(char *program)
     std::cout << "  -h\tDisplay this information." << std::endl;
     std::cout << std::endl;
     exit(1);
+}
+
+void createTestCases(int ctnPercent, int maxNumber){
+    std::cout << "Creating random test cases" << std::endl;
+    int ctnLimit = 500*ctnPercent;
+    int addLimit = 0.9*500*(1-ctnPercent);
+
+    for(int sNo = 0; sNo < 500; sNo++){
+        setTestCase currTestCase;
+        currTestCase.value = (rand() % maxNumber);
+        if (sNo < ctnLimit){
+            currTestCase.method = ctn;
+        }else if(sNo < ctnLimit + addLimit){
+            currTestCase.method = add;
+        }else {
+            currTestCase.method = rmv;
+        }
+        allTestCases.push_back(currTestCase);
+    }
+
+    std::shuffle(allTestCases.begin(), allTestCases.end(), std::random_device());
+}
+
+void lazyThread(){
+    // std::cout << "in Lazy Thread" << std::endl;
+    for(int sNo = 0; sNo < 500; sNo++){
+        switch (allTestCases[sNo].method){
+            case add:
+                lzySet.add(allTestCases[sNo].value);
+                break;
+            case rmv:
+                lzySet.rmv(allTestCases[sNo].value);
+                break;
+            default:
+                lzySet.ctn(allTestCases[sNo].value);
+        }
+    }
+}
+
+void optimisticThread(){
+    // std::cout << "in Optimistic Thread" << std::endl;
+    for(int sNo = 0; sNo < 500; sNo++){
+        switch (allTestCases[sNo].method){
+            case add:
+                optSet.add(allTestCases[sNo].value);
+                break;
+            case rmv:
+                optSet.rmv(allTestCases[sNo].value);
+                break;
+            default:
+                optSet.ctn(allTestCases[sNo].value);
+        }
+    }
+}
+
+void fineThread(){
+    // std::cout << "in Fine Thread" << std::endl;
+    for(int sNo = 0; sNo < 500; sNo++){
+        switch (allTestCases[sNo].method){
+            case add:
+                finSet.add(allTestCases[sNo].value);
+                break;
+            case rmv:
+                finSet.rmv(allTestCases[sNo].value);
+                break;
+            default:
+                finSet.ctn(allTestCases[sNo].value);
+        }
+    }
 }
 
 int main(int argc, char *argv[]){
@@ -59,5 +142,65 @@ int main(int argc, char *argv[]){
     {
       helpText(argv[0]);
     }
+
+    srand(time(NULL));
+
+    createTestCases(ctnPercent/100, maxNumber);
+
+    std::thread *threadHandles = new std::thread[maxThreads];
+
+    std::cout << "Testing Lazy Set: " << std::endl;
+    //* Running test case on lazy set
+    //Starting Timer
+    auto start_time = std::chrono::system_clock::now();
+
+    for (int threadNo=0; threadNo<maxThreads; ++threadNo){
+        threadHandles[threadNo] = std::thread(lazyThread);
+    }
     
+    for (int threadNo=0; threadNo<maxThreads; ++threadNo){
+        threadHandles[threadNo].join();
+    }
+    std::chrono::duration<double> duration = (std::chrono::system_clock::now() - start_time);
+
+    std::cout << "Lazy Set Test --- No_of_Threads: " << maxThreads << " cntPercent: " << ctnPercent << " duration: " << duration.count() << std::endl;
+    lzySet.printState();
+
+
+    std::cout << "Testing Optimistic Set: " << std::endl;
+    //* Running test case on optimistic set
+    // Starting Timer
+    start_time = std::chrono::system_clock::now();
+
+    for (int threadNo=0; threadNo<maxThreads; ++threadNo){
+        threadHandles[threadNo] = std::thread(optimisticThread);
+    }
+    
+    for (int threadNo=0; threadNo<maxThreads; ++threadNo){
+        threadHandles[threadNo].join();
+    }
+    duration = (std::chrono::system_clock::now() - start_time);
+
+    std::cout << "Optimistic Set Test --- No_of_Threads: " << maxThreads << " cntPercent: " << ctnPercent << " duration: " << duration.count() << std::endl;
+    optSet.printState();
+
+
+    std::cout << "Testing Fine Set: " << std::endl;
+    //* Running test case on fine set
+    // Starting Timer
+    start_time = std::chrono::system_clock::now();
+
+    for (int threadNo=0; threadNo<maxThreads; ++threadNo){
+        threadHandles[threadNo] = std::thread(fineThread);
+    }
+    
+    for (int threadNo=0; threadNo<maxThreads; ++threadNo){
+        threadHandles[threadNo].join();
+    }
+    duration = (std::chrono::system_clock::now() - start_time);
+
+    std::cout << "Fine Set Test --- No_of_Threads: " << maxThreads << " cntPercent: " << ctnPercent << " duration: " << duration.count() << std::endl;
+    finSet.printState();
+
+    std::cout << std::endl << std::endl;
 }

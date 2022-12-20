@@ -149,7 +149,7 @@ public:
         optNode* prev = head;
         optNode* curr = head->next;
         curr->lock();
-        std::cout << "The state of the set after successful operation is: ";
+        std::cout << "The state of the optimistic set after successful operation is: ";
         while(curr->value < INT_MAX){
             std::cout << curr->value <<" ";
             prev->unlock();
