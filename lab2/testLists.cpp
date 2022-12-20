@@ -10,7 +10,7 @@ enum listOps {add, rmv, ctn};
 //   int value;
 //   bool expOutput;
 // } setOperation;
-
+#define PRINT_FINAL false
 typedef struct setTestCase{
   listOps method;
   int value;
@@ -38,7 +38,7 @@ int helpText(char *program)
 }
 
 void createTestCases(int ctnPercent, int maxNumber){
-    std::cout << "Creating random test cases" << std::endl;
+    if(PRINT_FINAL) {std::cout << "Creating random test cases" << std::endl;}
     int ctnLimit = 500*ctnPercent;
     int addLimit = 0.9*500*(1-ctnPercent);
 
@@ -149,7 +149,7 @@ int main(int argc, char *argv[]){
 
     std::thread *threadHandles = new std::thread[maxThreads];
 
-    std::cout << "Testing Lazy Set: " << std::endl;
+    if(PRINT_FINAL) {std::cout << "Testing Lazy Set: " << std::endl;}
     //* Running test case on lazy set
     //Starting Timer
     auto start_time = std::chrono::system_clock::now();
@@ -164,10 +164,10 @@ int main(int argc, char *argv[]){
     std::chrono::duration<double> duration = (std::chrono::system_clock::now() - start_time);
 
     std::cout << "Lazy Set Test --- No_of_Threads: " << maxThreads << " cntPercent: " << ctnPercent << " duration: " << duration.count() << std::endl;
-    lzySet.printState();
+    if(PRINT_FINAL) {lzySet.printState();}
 
 
-    std::cout << "Testing Optimistic Set: " << std::endl;
+    if(PRINT_FINAL) {std::cout << "Testing Optimistic Set: " << std::endl;}
     //* Running test case on optimistic set
     // Starting Timer
     start_time = std::chrono::system_clock::now();
@@ -182,10 +182,10 @@ int main(int argc, char *argv[]){
     duration = (std::chrono::system_clock::now() - start_time);
 
     std::cout << "Optimistic Set Test --- No_of_Threads: " << maxThreads << " cntPercent: " << ctnPercent << " duration: " << duration.count() << std::endl;
-    optSet.printState();
+    if(PRINT_FINAL) {optSet.printState();}
 
 
-    std::cout << "Testing Fine Set: " << std::endl;
+    if(PRINT_FINAL) {std::cout << "Testing Fine Set: " << std::endl;}
     //* Running test case on fine set
     // Starting Timer
     start_time = std::chrono::system_clock::now();
@@ -200,7 +200,7 @@ int main(int argc, char *argv[]){
     duration = (std::chrono::system_clock::now() - start_time);
 
     std::cout << "Fine Set Test --- No_of_Threads: " << maxThreads << " cntPercent: " << ctnPercent << " duration: " << duration.count() << std::endl;
-    finSet.printState();
+    if(PRINT_FINAL) {finSet.printState();}
 
     std::cout << std::endl << std::endl;
 }

@@ -54,6 +54,8 @@ public:
         }
         // Return false if the key is already present
         if (curr->value == key){
+            curr->unlock();
+            prev->unlock();
             return false;
         }
         // Create new node and add it at the current location

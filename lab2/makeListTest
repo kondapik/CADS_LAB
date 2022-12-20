@@ -3,6 +3,36 @@ RM=rm all
 
 all: $(PROG).cpp
 	@g++ -std=c++11 -Wall -pthread $(PROG).cpp -o $(PROG)
+	./$(PROG) 2 10 8
+
+	./$(PROG) 2 50 8
+
+	./$(PROG) 2 90 8
+
+	./$(PROG) 4 10 8
+
+	./$(PROG) 4 50 8
+
+	./$(PROG) 4 90 8
+
+	./$(PROG) 8 10 8
+
+	./$(PROG) 8 50 8
+
+	./$(PROG) 8 90 8
+
+	./$(PROG) 16 10 8
+
+	./$(PROG) 16 50 8
+
+	./$(PROG) 16 90 8
+
+	./$(PROG) 32 10 8
+
+	./$(PROG) 32 50 8
+
+	./$(PROG) 32 90 8
+
 	./$(PROG) 2 10 1024
 
 	./$(PROG) 2 50 1024
