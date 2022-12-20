@@ -3,22 +3,22 @@
 #include <climits>
 #include <mutex>
 
-class listNode {
+class optNode {
 
 public:
     int value;
-    listNode* next;
+    optNode* next;
 
 private:
     pthread_mutex_t nodeLock;
 
 public:
-    listNode(int key){
+    optNode(int key){
         value = key;
         next = NULL;
     }
 
-    // ~listNode() {pthread_mutex_unlock(&nodeLock);}
+    // ~optNode() {pthread_mutex_unlock(&nodeLock);}
 
     void lock(){
         pthread_mutex_lock(&nodeLock);
@@ -32,10 +32,10 @@ public:
 
 class OptimisticList {
 private:
-    listNode* head;
+    optNode* head;
     
-    bool validate(listNode* prev, listNode* curr){
-        listNode* tmpNode = head;
+    bool validate(optNode* prev, optNode* curr){
+        optNode* tmpNode = head;
         while (tmpNode->value <= prev->value){
             if (tmpNode == prev){
                 return prev->next == curr;
@@ -47,15 +47,15 @@ private:
 
 public:
     OptimisticList() {   
-        head = new listNode(INT_MIN);
-        head->next = new listNode(INT_MAX);
+        head = new optNode(INT_MIN);
+        head->next = new optNode(INT_MAX);
     }
 
     bool add(int key) {
         // Starting with head traversing the list one node at a time by taking locks
         while(true){
-            listNode* prev = head;
-            listNode* curr = prev->next;
+            optNode* prev = head;
+            optNode* curr = prev->next;
             while(curr->value < key){
                 prev = curr;
                 curr = prev->next;
@@ -71,7 +71,7 @@ public:
                     return false;
                 }
                 // Create new node and add it at the current location
-                listNode* newNode = new listNode(key);
+                optNode* newNode = new optNode(key);
                 newNode->next = curr;
                 prev->next = newNode;
                 curr->unlock();
@@ -86,8 +86,8 @@ public:
     bool rmv(int key){
         // Starting at the head and traversing the list one node at a time by taking locks along the way
         while(true){
-            listNode* prev = head;
-            listNode* curr = prev->next;
+            optNode* prev = head;
+            optNode* curr = prev->next;
             while(curr->value < key){
                 prev = curr;
                 curr = prev->next;
@@ -117,8 +117,8 @@ public:
     bool ctn(int key){
         // Starting at the head and traversing the list one node at a time by taking locks along the way
         while(true){
-            listNode* prev = head;
-            listNode* curr = head->next;
+            optNode* prev = head;
+            optNode* curr = head->next;
             while(curr->value < key){
                 prev = curr;
                 curr = prev->next;
@@ -146,8 +146,8 @@ public:
     void printState()
     {
         head->lock();
-        listNode* prev = head;
-        listNode* curr = head->next;
+        optNode* prev = head;
+        optNode* curr = head->next;
         curr->lock();
         std::cout << "The state of the set after successful operation is: ";
         while(curr->value < INT_MAX){

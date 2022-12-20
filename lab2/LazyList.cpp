@@ -3,24 +3,24 @@
 #include <climits>
 #include <mutex>
 
-class listNode {
+class lazyNode {
 
 public:
     int value;
-    listNode* next;
+    lazyNode* next;
     bool mark;
 
 private:
     pthread_mutex_t nodeLock;
 
 public:
-    listNode(int key){
+    lazyNode(int key){
         value = key;
         next = NULL;
         mark = false;
     }
 
-    // ~listNode() {pthread_mutex_unlock(&nodeLock);}
+    // ~lazyNode() {pthread_mutex_unlock(&nodeLock);}
 
     void lock(){
         pthread_mutex_lock(&nodeLock);
@@ -34,10 +34,10 @@ public:
 
 class LazyList {
 private:
-    listNode* head;
+    lazyNode* head;
     
-    bool validate(listNode* prev, listNode* curr){
-        listNode* tmpNode = head;
+    bool validate(lazyNode* prev, lazyNode* curr){
+        lazyNode* tmpNode = head;
         while (tmpNode->value <= prev->value){
             if (tmpNode == prev){
                 //validate is modified to return true iff both nodes are not marked
@@ -50,15 +50,15 @@ private:
 
 public:
     LazyList() {   
-        head = new listNode(INT_MIN);
-        head->next = new listNode(INT_MAX);
+        head = new lazyNode(INT_MIN);
+        head->next = new lazyNode(INT_MAX);
     }
 
     bool add(int key) {
         // Starting with head traversing the list one node at a time by taking locks
         while(true){
-            listNode* prev = head;
-            listNode* curr = prev->next;
+            lazyNode* prev = head;
+            lazyNode* curr = prev->next;
             while(curr->value < key){
                 prev = curr;
                 curr = prev->next;
@@ -74,7 +74,7 @@ public:
                     return false;
                 }
                 // Create new node and add it at the current location
-                listNode* newNode = new listNode(key);
+                lazyNode* newNode = new lazyNode(key);
                 newNode->next = curr;
                 prev->next = newNode;
                 curr->unlock();
@@ -89,8 +89,8 @@ public:
     bool rmv(int key){
         // Starting at the head and traversing the list one node at a time by taking locks along the way
         while(true){
-            listNode* prev = head;
-            listNode* curr = prev->next;
+            lazyNode* prev = head;
+            lazyNode* curr = prev->next;
             while(curr->value < key){
                 prev = curr;
                 curr = prev->next;
@@ -120,7 +120,7 @@ public:
 
     bool ctn(int key){
         // Starting at the head and traversing the list one node at a time
-        listNode* curr = head;
+        lazyNode* curr = head;
         while(curr->value < key){
             curr = curr->next;
         }
@@ -130,8 +130,8 @@ public:
     void printState()
     {
         head->lock();
-        listNode* prev = head;
-        listNode* curr = head->next;
+        lazyNode* prev = head;
+        lazyNode* curr = head->next;
         curr->lock();
         std::cout << "The state of the set after successful operation is: ";
         while(curr->value < INT_MAX){

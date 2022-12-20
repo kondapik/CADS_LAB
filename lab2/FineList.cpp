@@ -3,22 +3,22 @@
 #include <climits>
 #include <mutex>
 
-class listNode {
+class fineNode {
 
 public:
     int value;
-    listNode* next;
+    fineNode* next;
 
 private:
     pthread_mutex_t nodeLock;
 
 public:
-    listNode(int key){
+    fineNode(int key){
         value = key;
         next = NULL;
     }
 
-    // ~listNode() {pthread_mutex_unlock(&nodeLock);}
+    // ~fineNode() {pthread_mutex_unlock(&nodeLock);}
 
     void lock(){
         pthread_mutex_lock(&nodeLock);
@@ -32,19 +32,19 @@ public:
 
 class FineList {
 private:
-    listNode* head;
+    fineNode* head;
 
 public:
     FineList() {   
-        head = new listNode(INT_MIN);
-        head->next = new listNode(INT_MAX);
+        head = new fineNode(INT_MIN);
+        head->next = new fineNode(INT_MAX);
     }
 
     bool add(int key) {
         // Starting with head traversing the list one node at a time by taking locks
         head->lock();
-        listNode* prev = head;
-        listNode* curr = head->next;
+        fineNode* prev = head;
+        fineNode* curr = head->next;
         curr->lock();
         while(curr->value < key){
             prev->unlock();
@@ -57,7 +57,7 @@ public:
             return false;
         }
         // Create new node and add it at the current location
-        listNode* newNode = new listNode(key);
+        fineNode* newNode = new fineNode(key);
         newNode->next = curr;
         prev->next = newNode;
         curr->unlock();
@@ -68,8 +68,8 @@ public:
     bool rmv(int key){
         // Starting at the head and traversing the list one node at a time by taking locks along the way
         head->lock();
-        listNode* prev = head;
-        listNode* curr = head->next;
+        fineNode* prev = head;
+        fineNode* curr = head->next;
         curr->lock();
         while(curr->value < key){
             prev->unlock();
@@ -94,8 +94,8 @@ public:
     bool ctn(int key){
         // Starting at the head and traversing the list one node at a time by taking locks along the way
         head->lock();
-        listNode* prev = head;
-        listNode* curr = head->next;
+        fineNode* prev = head;
+        fineNode* curr = head->next;
         curr->lock();
         while(curr->value < key){
             prev->unlock();
@@ -118,8 +118,8 @@ public:
     void printState()
     {
         head->lock();
-        listNode* prev = head;
-        listNode* curr = head->next;
+        fineNode* prev = head;
+        fineNode* curr = head->next;
         curr->lock();
         std::cout << "The state of the set after successful operation is: ";
         while(curr->value < INT_MAX){

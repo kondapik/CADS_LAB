@@ -1,0 +1,20 @@
+PROG=testLists
+RM=rm all
+
+all: $(PROG).cpp
+	@g++ -std=c++11 -Wall -pthread $(PROG).cpp -o $(PROG)
+	./$(PROG) 2 10 7
+
+	./$(PROG) 2 50 7
+
+	./$(PROG) 2 90 7
+
+	./$(PROG) 4 10 7
+
+	./$(PROG) 4 50 7
+
+	./$(PROG) 4 90 7
+	
+.PHONY: clean
+clean:
+	$(RM) $(PROG)
