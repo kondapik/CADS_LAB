@@ -9,8 +9,8 @@ public:
     int value;
     optNode* next;
 
-private:
-    pthread_mutex_t nodeLock;
+// private:
+    std::mutex nodeLock;
 
 public:
     optNode(int key){
@@ -20,13 +20,13 @@ public:
 
     // ~optNode() {pthread_mutex_unlock(&nodeLock);}
 
-    void lock(){
-        pthread_mutex_lock(&nodeLock);
-    }
+    // void lock(){
+    //     pthread_mutex_lock(&nodeLock);
+    // }
 
-    void unlock(){
-        pthread_mutex_unlock(&nodeLock);
-    }
+    // void unlock(){
+    //     pthread_mutex_unlock(&nodeLock);
+    // }
 };
 
 
@@ -62,24 +62,24 @@ public:
             }
 
             // lock both nodes before validating them
-            curr->lock();
-            prev->lock();
+            curr->nodeLock.lock();
+            prev->nodeLock.lock();
             if (validate(prev, curr)){
                 if (curr->value == key){
-                    curr->unlock();
-                    prev->unlock();
+                    curr->nodeLock.unlock();
+                    prev->nodeLock.unlock();
                     return false;
                 }
                 // Create new node and add it at the current location
                 optNode* newNode = new optNode(key);
                 newNode->next = curr;
                 prev->next = newNode;
-                curr->unlock();
-                prev->unlock();
+                curr->nodeLock.unlock();
+                prev->nodeLock.unlock();
                 return true;
             }
-            curr->unlock();
-            prev->unlock();
+            curr->nodeLock.unlock();
+            prev->nodeLock.unlock();
         }
     }
 
@@ -94,23 +94,23 @@ public:
             }
             // Give the pointer of next node to previous node and return true if the key is present
             // lock both nodes before validating them
-            curr->lock();
-            prev->lock();
+            curr->nodeLock.lock();
+            prev->nodeLock.lock();
             if (validate(prev, curr)){
                 if (curr->value == key){
                     prev->next = curr->next;
-                    curr->unlock();
-                    prev->unlock();
+                    curr->nodeLock.unlock();
+                    prev->nodeLock.unlock();
                     free(curr);
                     return true;
                 }
                 // Return false if key is not found
-                curr->unlock();
-                prev->unlock();
+                curr->nodeLock.unlock();
+                prev->nodeLock.unlock();
                 return false;
             }
-            curr->unlock();
-            prev->unlock();
+            curr->nodeLock.unlock();
+            prev->nodeLock.unlock();
         }
     }
 
@@ -124,41 +124,41 @@ public:
                 curr = prev->next;
             }
             // lock both nodes before validating them
-            curr->lock();
-            prev->lock();
+            curr->nodeLock.lock();
+            prev->nodeLock.lock();
             if (validate(prev, curr)){
                 // return true if the key is present
                 if (curr->value == key){
-                    curr->unlock();
-                    prev->unlock();
+                    curr->nodeLock.unlock();
+                    prev->nodeLock.unlock();
                     return true;
                 }
                 // Return false if key is not found
-                curr->unlock();
-                prev->unlock();
+                curr->nodeLock.unlock();
+                prev->nodeLock.unlock();
                 return false;
             }
-            curr->unlock();
-            prev->unlock();
+            curr->nodeLock.unlock();
+            prev->nodeLock.unlock();
         }
     }
 
     void printState()
     {
-        head->lock();
+        head->nodeLock.lock();
         optNode* prev = head;
         optNode* curr = head->next;
-        curr->lock();
+        curr->nodeLock.lock();
         std::cout << "The state of the optimistic set after successful operation is: ";
         while(curr->value < INT_MAX){
             std::cout << curr->value <<" ";
-            prev->unlock();
+            prev->nodeLock.unlock();
             prev = curr;
             curr = prev->next;
-            curr->lock();
+            curr->nodeLock.lock();
         }
         std::cout << "." << std::endl;
-        curr->unlock();
-        prev->unlock();
+        curr->nodeLock.unlock();
+        prev->nodeLock.unlock();
     }
 };

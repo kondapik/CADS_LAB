@@ -9,8 +9,8 @@ public:
     int value;
     fineNode* next;
 
-private:
-    pthread_mutex_t nodeLock;
+// private:
+    std::mutex nodeLock;
 
 public:
     fineNode(int key){
@@ -20,13 +20,13 @@ public:
 
     // ~fineNode() {pthread_mutex_unlock(&nodeLock);}
 
-    void lock(){
-        pthread_mutex_lock(&nodeLock);
-    }
+    // void lock(){
+    //     pthread_mutex_lock(&nodeLock);
+    // }
 
-    void unlock(){
-        pthread_mutex_unlock(&nodeLock);
-    }
+    // void unlock(){
+    //     pthread_mutex_unlock(&nodeLock);
+    // }
 };
 
 
@@ -42,97 +42,97 @@ public:
 
     bool add(int key) {
         // Starting with head traversing the list one node at a time by taking locks
-        head->lock();
+        head->nodeLock.lock();
         fineNode* prev = head;
         fineNode* curr = head->next;
-        curr->lock();
+        curr->nodeLock.lock();
         while(curr->value < key){
-            prev->unlock();
+            prev->nodeLock.unlock();
             prev = curr;
             curr = prev->next;
-            curr->lock();
+            curr->nodeLock.lock();
         }
         // Return false if the key is already present
         if (curr->value == key){
-            curr->unlock();
-            prev->unlock();
+            curr->nodeLock.unlock();
+            prev->nodeLock.unlock();
             return false;
         }
         // Create new node and add it at the current location
         fineNode* newNode = new fineNode(key);
         newNode->next = curr;
         prev->next = newNode;
-        curr->unlock();
-        prev->unlock();
+        curr->nodeLock.unlock();
+        prev->nodeLock.unlock();
         return true;
     }
 
     bool rmv(int key){
         // Starting at the head and traversing the list one node at a time by taking locks along the way
-        head->lock();
+        head->nodeLock.lock();
         fineNode* prev = head;
         fineNode* curr = head->next;
-        curr->lock();
+        curr->nodeLock.lock();
         while(curr->value < key){
-            prev->unlock();
+            prev->nodeLock.unlock();
             prev = curr;
             curr = prev->next;
-            curr->lock();
+            curr->nodeLock.lock();
         }
         // Give the pointer of next node to previous node and return true if the key is present
         if (curr->value == key){
             prev->next = curr->next;
-            curr->unlock();
-            prev->unlock();
+            curr->nodeLock.unlock();
+            prev->nodeLock.unlock();
             free(curr);
             return true;
         }
         // Return false if key is not found
-        curr->unlock();
-        prev->unlock();
+        curr->nodeLock.unlock();
+        prev->nodeLock.unlock();
         return false;
     }
 
     bool ctn(int key){
         // Starting at the head and traversing the list one node at a time by taking locks along the way
-        head->lock();
+        head->nodeLock.lock();
         fineNode* prev = head;
         fineNode* curr = head->next;
-        curr->lock();
+        curr->nodeLock.lock();
         while(curr->value < key){
-            prev->unlock();
+            prev->nodeLock.unlock();
             prev = curr;
             curr = prev->next;
-            curr->lock();
+            curr->nodeLock.lock();
         }
         // return true if the key is present
         if (curr->value == key){
-            curr->unlock();
-            prev->unlock();
+            curr->nodeLock.unlock();
+            prev->nodeLock.unlock();
             return true;
         }
         // Return false if key is not found
-        curr->unlock();
-        prev->unlock();
+        curr->nodeLock.unlock();
+        prev->nodeLock.unlock();
         return false;
     }
 
     void printState()
     {
-        head->lock();
+        head->nodeLock.lock();
         fineNode* prev = head;
         fineNode* curr = head->next;
-        curr->lock();
+        curr->nodeLock.lock();
         std::cout << "The state of the fine set after successful operation is: ";
         while(curr->value < INT_MAX){
             std::cout << curr->value <<" ";
-            prev->unlock();
+            prev->nodeLock.unlock();
             prev = curr;
             curr = prev->next;
-            curr->lock();
+            curr->nodeLock.lock();
         }
         std::cout << "." << std::endl;
-        curr->unlock();
-        prev->unlock();
+        curr->nodeLock.unlock();
+        prev->nodeLock.unlock();
     }
 };
