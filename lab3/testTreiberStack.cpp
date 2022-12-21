@@ -106,7 +106,7 @@ int main(int argc, char *argv[]){
             cout << "All Operations are executed successfully" << endl;
         }
     }
-    // mainTestSet.printState();
+    mainTestSet.printState();
 
     return 0;
 }
