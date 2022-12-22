@@ -7,23 +7,23 @@
 #define PRINT_FINAL false
 #define THREAD_COUNT 16
 #define OPERATIONS 100
+#define DEBUG true
 
 using namespace std;
 
-enum listOps {push, pop, size};
+// enum listOps {PUSH, POP, SIZE};
 
-typedef struct setOperation{
-  listOps method;
-  int value;
-  int expOutput;
-} setOperation;
+// typedef struct setOperation{
+//   listOps method;
+//   int value;
+//   int expOutput;
+// } setOperation;
 
 typedef struct setTestCase{
   listOps method;
   int value;
 } setTestCase;
 
-std::vector<setOperation> operationSequence;
 std::vector<setTestCase> allTestCases;
 pthread_mutex_t threadLock;
 
@@ -41,23 +41,16 @@ tStack testSet;
 
 void workerThread(){
     for(int sNo = 0; sNo < OPERATIONS; sNo++){
-        setOperation currOperation;
-        currOperation.value = allTestCases[sNo].value;
-        currOperation.method = allTestCases[sNo].method; // hardcoded for 3 methods
-        switch (currOperation.method){
-            case push:
-                currOperation.expOutput = 't';
-                testSet.push(currOperation.value);
+        switch (allTestCases[sNo].method){
+            case PUSH:
+                testSet.push(allTestCases[sNo].value);
                 break;
-            case pop:
-                currOperation.expOutput = testSet.pop();
+            case POP:
+                testSet.pop();
                 break;
             default:
-                currOperation.expOutput = testSet.size();
+                testSet.size();
         }
-        pthread_mutex_lock(&threadLock);
-        operationSequence.push_back(currOperation);
-        pthread_mutex_unlock(&threadLock);
     }
 }
 
@@ -84,23 +77,25 @@ int main(int argc, char *argv[]){
     std::cout << "Monitoring generated sequence" << std::endl;
     for(int sNo = 0; sNo < OPERATIONS*THREAD_COUNT; sNo++){
         int returnVal;
-        switch (operationSequence[sNo].method){
-            case push:
+        switch (testSet.operationSequence[sNo].method){
+            case PUSH:
                 returnVal = 't';
-                mainTestSet.push(operationSequence[sNo].value);
-                cout << "(push," << operationSequence[sNo].value << ")" << endl;
+                mainTestSet.push(testSet.operationSequence[sNo].value);
+                cout << "(push," << testSet.operationSequence[sNo].value << ")" << endl;
                 break;
-            case pop:
+            case POP:
                 returnVal = mainTestSet.pop();
-                cout << "(pop," << ((operationSequence[sNo].expOutput > 0) ? to_string(operationSequence[sNo].expOutput) : "*") << ")" << endl;
+                cout << "(pop," << ((testSet.operationSequence[sNo].expOutput > 0) ? to_string(testSet.operationSequence[sNo].expOutput) : "*") << ")" << endl;
                 break;
             default:
                 returnVal = mainTestSet.size();
-                cout << "(size," << operationSequence[sNo].expOutput << ")" << endl;
+                cout << "(size," << testSet.operationSequence[sNo].expOutput << ")" << endl;
         }
 
-        if (returnVal != operationSequence[sNo].expOutput){
-            cout << "The above operation is not allowed!" << endl;
+        if (returnVal != testSet.operationSequence[sNo].expOutput){
+            printf("The expected value is %d and the returned value is %d\n", testSet.operationSequence[sNo].expOutput, returnVal);
+            if (DEBUG) {throw std::invalid_argument( "received wrong result" );}
+            printf("The above operation is not allowed!\n");
             break;
         }else if(sNo == OPERATIONS*THREAD_COUNT - 1){
             cout << "All Operations are executed successfully" << endl;
