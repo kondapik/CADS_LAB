@@ -109,7 +109,7 @@ void fineThread(){
 int main(int argc, char *argv[]){
 
     // SetList mainTestSet;
-    int maxThreads, ctnPercent, maxNumber;
+    int maxThreads = 4, ctnPercent = 50, maxNumber = 8;
     if (argc == 1 || "-h" == std::string(argv[1]) || argc < 4 || argc > 5)
     {
         helpText(argv[0]);

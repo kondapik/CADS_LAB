@@ -18,7 +18,8 @@ public:
         next = NULL;
     }
 
-    // ~optNode() {pthread_mutex_unlock(&nodeLock);}
+    //  ~optNode() {pthread_mutex_unlock(&nodeLock);}
+    ~optNode() {nodeLock.unlock();}
 
     // void lock(){
     //     pthread_mutex_lock(&nodeLock);
@@ -61,25 +62,28 @@ public:
                 curr = prev->next;
             }
 
-            // lock both nodes before validating them
-            curr->nodeLock.lock();
-            prev->nodeLock.lock();
-            if (validate(prev, curr)){
-                if (curr->value == key){
-                    curr->nodeLock.unlock();
-                    prev->nodeLock.unlock();
-                    return false;
+            {// lock both nodes before validating them
+                std::unique_lock<std::mutex>guardPrev(prev->nodeLock,std::defer_lock);
+                std::unique_lock<std::mutex>guardCurr(curr->nodeLock,std::defer_lock);
+                std::lock(guardCurr, guardPrev);
+
+                if (validate(prev, curr)){
+                    if (curr->value == key){
+                        // guardPrev.unlock();
+                        // guardCurr.unlock();
+                        return false;
+                    }
+                    // Create new node and add it at the current location
+                    optNode* newNode = new optNode(key);
+                    newNode->next = curr;
+                    prev->next = newNode;
+                    // guardPrev.unlock();
+                    // guardCurr.unlock();
+                    return true;
                 }
-                // Create new node and add it at the current location
-                optNode* newNode = new optNode(key);
-                newNode->next = curr;
-                prev->next = newNode;
-                curr->nodeLock.unlock();
-                prev->nodeLock.unlock();
-                return true;
+                // guardPrev.unlock();
+                // guardCurr.unlock();
             }
-            curr->nodeLock.unlock();
-            prev->nodeLock.unlock();
         }
     }
 
@@ -93,24 +97,26 @@ public:
                 curr = prev->next;
             }
             // Give the pointer of next node to previous node and return true if the key is present
-            // lock both nodes before validating them
-            curr->nodeLock.lock();
-            prev->nodeLock.lock();
-            if (validate(prev, curr)){
-                if (curr->value == key){
-                    prev->next = curr->next;
-                    curr->nodeLock.unlock();
-                    prev->nodeLock.unlock();
-                    free(curr);
-                    return true;
+            {// lock both nodes before validating them
+                std::unique_lock<std::mutex>guardPrev(prev->nodeLock,std::defer_lock);
+                std::unique_lock<std::mutex>guardCurr(curr->nodeLock,std::defer_lock);
+                std::lock(guardCurr, guardPrev);
+                if (validate(prev, curr)){
+                    if (curr->value == key){
+                        prev->next = curr->next;
+                        // guardPrev.unlock();
+                        // guardCurr.unlock();
+                        // free(curr);
+                        return true;
+                    }
+                    // Return false if key is not found
+                    // guardPrev.unlock();
+                    // guardCurr.unlock();
+                    return false;
                 }
-                // Return false if key is not found
-                curr->nodeLock.unlock();
-                prev->nodeLock.unlock();
-                return false;
+                // guardPrev.unlock();
+                // guardCurr.unlock();
             }
-            curr->nodeLock.unlock();
-            prev->nodeLock.unlock();
         }
     }
 
@@ -123,23 +129,25 @@ public:
                 prev = curr;
                 curr = prev->next;
             }
-            // lock both nodes before validating them
-            curr->nodeLock.lock();
-            prev->nodeLock.lock();
-            if (validate(prev, curr)){
-                // return true if the key is present
-                if (curr->value == key){
-                    curr->nodeLock.unlock();
-                    prev->nodeLock.unlock();
-                    return true;
+            {// lock both nodes before validating them
+                std::unique_lock<std::mutex>guardPrev(prev->nodeLock,std::defer_lock);
+                std::unique_lock<std::mutex>guardCurr(curr->nodeLock,std::defer_lock);
+                std::lock(guardCurr, guardPrev);
+                if (validate(prev, curr)){
+                    // return true if the key is present
+                    if (curr->value == key){
+                        // guardPrev.unlock();
+                        // guardCurr.unlock();
+                        return true;
+                    }
+                    // Return false if key is not found
+                    // guardPrev.unlock();
+                    // guardCurr.unlock();
+                    return false;
                 }
-                // Return false if key is not found
-                curr->nodeLock.unlock();
-                prev->nodeLock.unlock();
-                return false;
+                // guardPrev.unlock();
+                // guardCurr.unlock();
             }
-            curr->nodeLock.unlock();
-            prev->nodeLock.unlock();
         }
     }
 

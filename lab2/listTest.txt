@@ -1,0 +1,180 @@
+./testLists 2 10 8
+Lazy Set Test --- No_of_Threads: 2 cntPercent: 10 duration: 0.000242941
+Optimistic Set Test --- No_of_Threads: 2 cntPercent: 10 duration: 0.000274373
+Fine Set Test --- No_of_Threads: 2 cntPercent: 10 duration: 0.000355703
+
+
+./testLists 2 50 8
+Lazy Set Test --- No_of_Threads: 2 cntPercent: 50 duration: 0.000291062
+Optimistic Set Test --- No_of_Threads: 2 cntPercent: 50 duration: 0.000271906
+Fine Set Test --- No_of_Threads: 2 cntPercent: 50 duration: 0.000384366
+
+
+./testLists 2 90 8
+Lazy Set Test --- No_of_Threads: 2 cntPercent: 90 duration: 0.000315398
+Optimistic Set Test --- No_of_Threads: 2 cntPercent: 90 duration: 0.000297956
+Fine Set Test --- No_of_Threads: 2 cntPercent: 90 duration: 0.000352702
+
+
+./testLists 4 10 8
+Lazy Set Test --- No_of_Threads: 4 cntPercent: 10 duration: 0.000674206
+Optimistic Set Test --- No_of_Threads: 4 cntPercent: 10 duration: 0.000530208
+Fine Set Test --- No_of_Threads: 4 cntPercent: 10 duration: 0.00105349
+
+
+./testLists 4 50 8
+Lazy Set Test --- No_of_Threads: 4 cntPercent: 50 duration: 0.00072566
+Optimistic Set Test --- No_of_Threads: 4 cntPercent: 50 duration: 0.000554774
+Fine Set Test --- No_of_Threads: 4 cntPercent: 50 duration: 0.000891052
+
+
+./testLists 4 90 8
+Lazy Set Test --- No_of_Threads: 4 cntPercent: 90 duration: 0.000720593
+Optimistic Set Test --- No_of_Threads: 4 cntPercent: 90 duration: 0.00050429
+Fine Set Test --- No_of_Threads: 4 cntPercent: 90 duration: 0.000863179
+
+
+./testLists 8 10 8
+Lazy Set Test --- No_of_Threads: 8 cntPercent: 10 duration: 0.00167731
+Optimistic Set Test --- No_of_Threads: 8 cntPercent: 10 duration: 0.0014826
+Fine Set Test --- No_of_Threads: 8 cntPercent: 10 duration: 0.00142454
+
+
+./testLists 8 50 8
+Lazy Set Test --- No_of_Threads: 8 cntPercent: 50 duration: 0.00162616
+Optimistic Set Test --- No_of_Threads: 8 cntPercent: 50 duration: 0.00162005
+Fine Set Test --- No_of_Threads: 8 cntPercent: 50 duration: 0.00164452
+
+
+./testLists 8 90 8
+Lazy Set Test --- No_of_Threads: 8 cntPercent: 90 duration: 0.00174517
+Optimistic Set Test --- No_of_Threads: 8 cntPercent: 90 duration: 0.001468
+Fine Set Test --- No_of_Threads: 8 cntPercent: 90 duration: 0.00153235
+
+
+./testLists 16 10 8
+Lazy Set Test --- No_of_Threads: 16 cntPercent: 10 duration: 0.00486618
+Optimistic Set Test --- No_of_Threads: 16 cntPercent: 10 duration: 0.00472782
+Fine Set Test --- No_of_Threads: 16 cntPercent: 10 duration: 0.00312842
+
+
+./testLists 16 50 8
+Lazy Set Test --- No_of_Threads: 16 cntPercent: 50 duration: 0.00498114
+Optimistic Set Test --- No_of_Threads: 16 cntPercent: 50 duration: 0.00485789
+Fine Set Test --- No_of_Threads: 16 cntPercent: 50 duration: 0.00307046
+
+
+./testLists 16 90 8
+Lazy Set Test --- No_of_Threads: 16 cntPercent: 90 duration: 0.00487436
+Optimistic Set Test --- No_of_Threads: 16 cntPercent: 90 duration: 0.0039286
+Fine Set Test --- No_of_Threads: 16 cntPercent: 90 duration: 0.00303358
+
+
+./testLists 32 10 8
+Lazy Set Test --- No_of_Threads: 32 cntPercent: 10 duration: 0.0140614
+Optimistic Set Test --- No_of_Threads: 32 cntPercent: 10 duration: 0.0255867
+Fine Set Test --- No_of_Threads: 32 cntPercent: 10 duration: 0.00662429
+
+
+./testLists 32 50 8
+Lazy Set Test --- No_of_Threads: 32 cntPercent: 50 duration: 0.0146787
+Optimistic Set Test --- No_of_Threads: 32 cntPercent: 50 duration: 0.0347888
+Fine Set Test --- No_of_Threads: 32 cntPercent: 50 duration: 0.00734171
+
+
+./testLists 32 90 8
+Lazy Set Test --- No_of_Threads: 32 cntPercent: 90 duration: 0.0471739
+Optimistic Set Test --- No_of_Threads: 32 cntPercent: 90 duration: 0.0547502
+Fine Set Test --- No_of_Threads: 32 cntPercent: 90 duration: 0.0073434
+
+
+./testLists 2 10 1024
+Lazy Set Test --- No_of_Threads: 2 cntPercent: 10 duration: 0.0004508
+Optimistic Set Test --- No_of_Threads: 2 cntPercent: 10 duration: 0.000390017
+Fine Set Test --- No_of_Threads: 2 cntPercent: 10 duration: 0.00152884
+
+
+./testLists 2 50 1024
+Lazy Set Test --- No_of_Threads: 2 cntPercent: 50 duration: 0.000451892
+Optimistic Set Test --- No_of_Threads: 2 cntPercent: 50 duration: 0.000438286
+Fine Set Test --- No_of_Threads: 2 cntPercent: 50 duration: 0.00173693
+
+
+./testLists 2 90 1024
+Lazy Set Test --- No_of_Threads: 2 cntPercent: 90 duration: 0.000372214
+Optimistic Set Test --- No_of_Threads: 2 cntPercent: 90 duration: 0.000395928
+Fine Set Test --- No_of_Threads: 2 cntPercent: 90 duration: 0.00164357
+
+
+./testLists 4 10 1024
+Lazy Set Test --- No_of_Threads: 4 cntPercent: 10 duration: 0.000721895
+Optimistic Set Test --- No_of_Threads: 4 cntPercent: 10 duration: 0.000511644
+Fine Set Test --- No_of_Threads: 4 cntPercent: 10 duration: 0.0162464
+
+
+./testLists 4 50 1024
+Lazy Set Test --- No_of_Threads: 4 cntPercent: 50 duration: 0.000851226
+Optimistic Set Test --- No_of_Threads: 4 cntPercent: 50 duration: 0.00056369
+Fine Set Test --- No_of_Threads: 4 cntPercent: 50 duration: 0.0181976
+
+
+./testLists 4 90 1024
+Lazy Set Test --- No_of_Threads: 4 cntPercent: 90 duration: 0.000596431
+Optimistic Set Test --- No_of_Threads: 4 cntPercent: 90 duration: 0.000519088
+Fine Set Test --- No_of_Threads: 4 cntPercent: 90 duration: 0.014206
+
+
+./testLists 8 10 1024
+Lazy Set Test --- No_of_Threads: 8 cntPercent: 10 duration: 0.0011469
+Optimistic Set Test --- No_of_Threads: 8 cntPercent: 10 duration: 0.00124928
+Fine Set Test --- No_of_Threads: 8 cntPercent: 10 duration: 0.0339643
+
+
+./testLists 8 50 1024
+Lazy Set Test --- No_of_Threads: 8 cntPercent: 50 duration: 0.000927178
+Optimistic Set Test --- No_of_Threads: 8 cntPercent: 50 duration: 0.000981299
+Fine Set Test --- No_of_Threads: 8 cntPercent: 50 duration: 0.0361484
+
+
+./testLists 8 90 1024
+Lazy Set Test --- No_of_Threads: 8 cntPercent: 90 duration: 0.00111346
+Optimistic Set Test --- No_of_Threads: 8 cntPercent: 90 duration: 0.00114855
+Fine Set Test --- No_of_Threads: 8 cntPercent: 90 duration: 0.0341201
+
+
+./testLists 16 10 1024
+Lazy Set Test --- No_of_Threads: 16 cntPercent: 10 duration: 0.00179621
+Optimistic Set Test --- No_of_Threads: 16 cntPercent: 10 duration: 0.00151226
+Fine Set Test --- No_of_Threads: 16 cntPercent: 10 duration: 0.089192
+
+
+./testLists 16 50 1024
+Lazy Set Test --- No_of_Threads: 16 cntPercent: 50 duration: 0.00209606
+Optimistic Set Test --- No_of_Threads: 16 cntPercent: 50 duration: 0.00197218
+Fine Set Test --- No_of_Threads: 16 cntPercent: 50 duration: 0.0724941
+
+
+./testLists 16 90 1024
+Lazy Set Test --- No_of_Threads: 16 cntPercent: 90 duration: 0.00249253
+Optimistic Set Test --- No_of_Threads: 16 cntPercent: 90 duration: 0.00139724
+Fine Set Test --- No_of_Threads: 16 cntPercent: 90 duration: 0.0774424
+
+
+./testLists 32 10 1024
+Lazy Set Test --- No_of_Threads: 32 cntPercent: 10 duration: 0.00387384
+Optimistic Set Test --- No_of_Threads: 32 cntPercent: 10 duration: 0.00279706
+Fine Set Test --- No_of_Threads: 32 cntPercent: 10 duration: 0.154041
+
+
+./testLists 32 50 1024
+Lazy Set Test --- No_of_Threads: 32 cntPercent: 50 duration: 0.00305689
+Optimistic Set Test --- No_of_Threads: 32 cntPercent: 50 duration: 0.0031511
+Fine Set Test --- No_of_Threads: 32 cntPercent: 50 duration: 0.145736
+
+
+./testLists 32 90 1024
+Lazy Set Test --- No_of_Threads: 32 cntPercent: 90 duration: 0.00420755
+Optimistic Set Test --- No_of_Threads: 32 cntPercent: 90 duration: 0.00343315
+Fine Set Test --- No_of_Threads: 32 cntPercent: 90 duration: 0.146755
+
+
