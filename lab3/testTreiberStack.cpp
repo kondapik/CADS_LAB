@@ -7,7 +7,7 @@
 #define PRINT_FINAL false
 #define THREAD_COUNT 16
 #define OPERATIONS 100
-#define DEBUG true
+#define DEBUG false
 
 using namespace std;
 
@@ -93,9 +93,9 @@ int main(int argc, char *argv[]){
         }
 
         if (returnVal != testSet.operationSequence[sNo].expOutput){
+            printf("The above operation is not allowed!\n");
             printf("The expected value is %d and the returned value is %d\n", testSet.operationSequence[sNo].expOutput, returnVal);
             if (DEBUG) {throw std::invalid_argument( "received wrong result" );}
-            printf("The above operation is not allowed!\n");
             break;
         }else if(sNo == OPERATIONS*THREAD_COUNT - 1){
             cout << "All Operations are executed successfully" << endl;
