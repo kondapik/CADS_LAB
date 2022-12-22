@@ -64,14 +64,21 @@ public:
         operationSequence.push_back(currOperation);
     }
 
+    // bool casWrapper(tNode* topNode,tNode* checkNode, listOps opr, int key, int returnVal, bool sizeInc){
+    //     ScopedMutex coarseLock(&linearMutex);
+    //     if (top.compare_exchange_strong(topNode, checkNode)){
+
+    //     }
+    // }
+
     void push(int key){
         tNode* pushNode = new tNode(key);
         while(true){
             tNode* topNode = top.load();
             pushNode->next = topNode;
             if (top.compare_exchange_strong(topNode, pushNode)){
-                addOperationSequence(listOps::PUSH, key, 't');
                 stackSize++;
+                addOperationSequence(listOps::PUSH, key, 't');
                 //logic to atomically remove the node
                 return;
             }
@@ -86,8 +93,8 @@ public:
                 return -1;
             }
             if (top.compare_exchange_strong(popNode, popNode->next)){
-                addOperationSequence(listOps::POP, 0, popNode->value);
                 stackSize--;
+                addOperationSequence(listOps::POP, 0, popNode->value);
                 //logic to atomically remove the node
                 return popNode->value;
             }
