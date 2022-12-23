@@ -2,6 +2,23 @@
 #include <stdlib.h>
 #include <climits>
 #include <mutex>
+#include <vector>
+
+class ScopedMutex {
+public:
+    ScopedMutex(pthread_mutex_t *m) : theMutex_(m) {pthread_mutex_lock(theMutex_);}
+    ~ScopedMutex() { pthread_mutex_unlock(theMutex_); }
+private:
+    pthread_mutex_t *theMutex_;
+};
+
+enum listOps {add, rmv, ctn};
+
+typedef struct setOperation{
+  listOps method;
+  int value;
+  int expOutput;
+} setOperation;
 
 class fineNode {
 
@@ -35,11 +52,23 @@ public:
 class FineMultiSet {
 private:
     fineNode* head;
-
+    
 public:
+    std::vector<setOperation> operationSequence;
+    pthread_mutex_t linearMutex;
+
     FineMultiSet() {   
         head = new fineNode(INT_MIN);
         head->next = new fineNode(INT_MAX);
+    }
+
+    void addOperationSequence(listOps opr, int key, int returnVal){
+        ScopedMutex coarseLock(&linearMutex);
+        setOperation currOperation;
+        currOperation.value = key;
+        currOperation.method = opr;
+        currOperation.expOutput = returnVal;
+        operationSequence.push_back(currOperation);
     }
 
     bool add(int key) {
@@ -56,12 +85,16 @@ public:
         }
         // Return false if the key is already present
         if (curr->value == key){
+            //*Linearization Point
+            addOperationSequence(listOps::add, key, true);
             curr->count++;
             curr->nodeLock.unlock();
             prev->nodeLock.unlock();
             return true;
         }
         // Create new node and add it at the current location
+        //*Linearization Point
+        addOperationSequence(listOps::add, key, true);
         fineNode* newNode = new fineNode(key);
         newNode->next = curr;
         prev->next = newNode;
@@ -84,6 +117,8 @@ public:
         }
         // Give the pointer of next node to previous node and return true if the key is present
         if (curr->value == key){
+            //*Linearization Point
+            addOperationSequence(listOps::rmv, key, true);
             if (curr->count > 1){
                 curr->count--;
                 curr->nodeLock.unlock();
@@ -97,6 +132,8 @@ public:
             return true;
         }
         // Return false if key is not found
+        //*Linearization Point
+        addOperationSequence(listOps::rmv, key, false);
         curr->nodeLock.unlock();
         prev->nodeLock.unlock();
         return false;
@@ -116,11 +153,15 @@ public:
         }
         // return true if the key is present
         if (curr->value == key){
+            //*Linearization Point
+            addOperationSequence(listOps::ctn, key, curr->count);
             curr->nodeLock.unlock();
             prev->nodeLock.unlock();
             return curr->count;
         }
         // Return false if key is not found
+        //*Linearization Point
+        addOperationSequence(listOps::ctn, key, 0);
         curr->nodeLock.unlock();
         prev->nodeLock.unlock();
         return 0;

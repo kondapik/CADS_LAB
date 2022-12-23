@@ -10,22 +10,13 @@
 
 using namespace std;
 
-enum listOps {add, rmv, ctn};
-
-typedef struct setOperation{
-  listOps method;
-  int value;
-  int expOutput;
-} setOperation;
-
 typedef struct setTestCase{
   listOps method;
   int value;
 } setTestCase;
 
-std::vector<setOperation> operationSequence;
+
 std::vector<setTestCase> allTestCases;
-pthread_mutex_t threadLock;
 
 void createTestCases(int testCasesNo){
     std::cout << "Creating random test cases" << std::endl;
@@ -41,22 +32,16 @@ FineMultiSet testSet;
 
 void workerThread(){
     for(int sNo = 0; sNo < OPERATIONS; sNo++){
-        setOperation currOperation;
-        currOperation.value = allTestCases[sNo].value;
-        currOperation.method = allTestCases[sNo].method; // hardcoded for 3 methods
-        switch (currOperation.method){
+        switch (allTestCases[sNo].method){
             case add:
-                currOperation.expOutput = testSet.add(currOperation.value);
+                testSet.add(allTestCases[sNo].value);
                 break;
             case rmv:
-                currOperation.expOutput = testSet.rmv(currOperation.value);
+                testSet.rmv(allTestCases[sNo].value);
                 break;
             default:
-                currOperation.expOutput = testSet.ctn(currOperation.value);
+                testSet.ctn(allTestCases[sNo].value);
         }
-        pthread_mutex_lock(&threadLock);
-        operationSequence.push_back(currOperation);
-        pthread_mutex_unlock(&threadLock);
     }
 }
 
@@ -83,22 +68,23 @@ int main(int argc, char *argv[]){
     std::cout << "Monitoring generated sequence" << std::endl;
     for(int sNo = 0; sNo < OPERATIONS*THREAD_COUNT; sNo++){
         int returnVal;
-        switch (operationSequence[sNo].method){
+        switch (testSet.operationSequence[sNo].method){
             case add:
-                returnVal = mainTestSet.add(operationSequence[sNo].value);
-                cout << "(add," << operationSequence[sNo].value << "," << boolalpha << operationSequence[sNo].expOutput << ")" << endl;
+                returnVal = mainTestSet.add(testSet.operationSequence[sNo].value);
+                cout << "(add," << testSet.operationSequence[sNo].value << "," << boolalpha << testSet.operationSequence[sNo].expOutput << ")" << endl;
                 break;
             case rmv:
-                returnVal = mainTestSet.rmv(operationSequence[sNo].value);
-                cout << "(rmv," << operationSequence[sNo].value << "," << boolalpha << operationSequence[sNo].expOutput << ")" << endl;
+                returnVal = mainTestSet.rmv(testSet.operationSequence[sNo].value);
+                cout << "(rmv," << testSet.operationSequence[sNo].value << "," << boolalpha << testSet.operationSequence[sNo].expOutput << ")" << endl;
                 break;
             default:
-                returnVal = mainTestSet.ctn(operationSequence[sNo].value);
-                cout << "(ctn," << operationSequence[sNo].value << "," << operationSequence[sNo].expOutput << ")" << endl;
+                returnVal = mainTestSet.ctn(testSet.operationSequence[sNo].value);
+                cout << "(ctn," << testSet.operationSequence[sNo].value << "," << testSet.operationSequence[sNo].expOutput << ")" << endl;
         }
 
-        if (returnVal != operationSequence[sNo].expOutput){
+        if (returnVal != testSet.operationSequence[sNo].expOutput){
             cout << "The above operation is not allowed!" << endl;
+            printf("The expected value is %d and the returned value is %d\n", testSet.operationSequence[sNo].expOutput, returnVal);
             break;
         }else if(sNo == OPERATIONS*THREAD_COUNT - 1){
             cout << "All Operations are executed successfully" << endl;
